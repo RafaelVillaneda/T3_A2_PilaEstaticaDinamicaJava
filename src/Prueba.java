@@ -1,16 +1,17 @@
 import java.util.Scanner;
+import java.util.Stack;
 
 /*Realizar un programa en Java como se indica a continuación:
 
 	X Crear una clase llamada Pelicula con atributos: titulo de la pelicula y genero de la pelicula.
-	Agregar una interfaz llamada RentaPeliculas que contenga las operaciones basicas de una estructura tipo PILA, implementado con las operaciones de la renta de peliculas.
-	Crear una clase llamada ImplementacionPilaEstatica, la cual implementara la interfaz anterior, aplicado un vector bidimensional para la estructura de pila.
-	Crear una clase llamada ImplementacionPilaDinamica, la cual implementara la interfaz anterior, aplicado la clase STACK de Java para la estructura de pila.
-	Agregar un menu para el usuario que permita mostrar lo siguiente:
-	Cargar BD de peliculas.
-	Rentar pelicula.
-	Devolver pelicula.
-	Mostrar cantidad de peliculas disponibles para renta.
+	XAgregar una interfaz llamada RentaPeliculas que contenga las operaciones basicas de una estructura tipo PILA, implementado con las operaciones de la renta de peliculas.
+	 XCrear una clase llamada ImplementacionPilaEstatica, la cual implementara la interfaz anterior, aplicado un vector bidimensional para la estructura de pila.
+	 Crear una clase llamada ImplementacionPilaDinamica, la cual implementara la interfaz anterior, aplicado la clase STACK de Java para la estructura de pila.
+	 Agregar un menu para el usuario que permita mostrar lo siguiente:
+	X Cargar BD de peliculas.
+	X Rentar pelicula.
+	X Devolver pelicula.
+	X Mostrar cantidad de peliculas disponibles para renta.
 */
 class Pelicula{
 	private String titulo;
@@ -108,6 +109,42 @@ class ImplementacionPilaEstatica implements RentaPeliculas{
 	
 
 }
+class ImplementacionPilaDinamica implements RentaPeliculas{
+	private Stack<Pelicula> pilaPelis=new Stack<Pelicula>();
+	private int cima;
+	public ImplementacionPilaDinamica() {
+		this.cima =-1;
+	}
+	@Override
+	public boolean insetarPeliculaRentada(Pelicula peli) {
+			pilaPelis.push(peli);
+			cima++;
+			return true;
+		}
+	@Override
+	public boolean eliminarPeliculaRectada() {
+		if(cima>=0) {
+		pilaPelis.pop();
+		cima--;
+		return true;
+		}else {
+			return false;
+		}
+	}
+	@Override
+	public boolean verificarPilaLlena() {
+		return false;
+	}
+	@Override
+	public boolean verficarPilaVacia() {
+		return pilaPelis.isEmpty();
+	}
+	@Override
+	public void mostrarCima() {
+		System.out.println(pilaPelis.peek());
+	}
+	
+}
 public class Prueba {
 
 	public static void main(String[] args) {
@@ -118,6 +155,7 @@ public class Prueba {
 		Pelicula[] pila=new Pelicula[5];
 		String op;
 		ImplementacionPilaEstatica pilaE=new ImplementacionPilaEstatica();
+		ImplementacionPilaDinamica pilaDi=new ImplementacionPilaDinamica();
 		do {
 		System.out.println("Elige la opcion que desees");
 		System.out.println("1-Cargar BD peliculas");
@@ -146,13 +184,22 @@ public class Prueba {
 					}
 					op2=entrada.nextLine();
 					try {
-						System.out.println(pilaE.insetarPeliculaRentada(pila[Integer.parseInt(op2)])? "Listo se a rantado la pelicula":"Oh vaya ya no puedes rentar mas peliculas");
+						System.out.println(pilaE.insetarPeliculaRentada(pila[Integer.parseInt(op2)-1])? "Listo se a rentado la pelicula":"Oh vaya ya no puedes rentar mas peliculas");
 						pocipeli++;
 					}catch(NumberFormatException e) {
 						System.out.println("Oh vaya no ingresaste un numero");
 					}
 				}else if(op2.equalsIgnoreCase("B")) {
-					
+					for(int i=0;i<pila.length;i++) {
+						System.out.println((i+1)+"-->"+pila[i]);
+					}
+					op2=entrada.nextLine();
+					try {
+						System.out.println(pilaDi.insetarPeliculaRentada(pila[Integer.parseInt(op2)-1])? "Listo se a rentado la pelicula":"Oh vaya ya no puedes rentar mas peliculas");
+						pocipeli++;
+					}catch(NumberFormatException e) {
+						System.out.println("Oh vaya no ingresaste un numero");
+					}
 				}//B
 			}else {
 				System.out.println("No se an cargado pelicuas");
@@ -166,7 +213,8 @@ public class Prueba {
 					System.out.println(pilaE.eliminarPeliculaRectada()? "Listo se a devuelto la pelicula":"Oh vaya ya no puedes devolver mas peliculas");
 					pocipeli--;
 				}else if(opOp3.equalsIgnoreCase("B")) {
-					
+					System.out.println(pilaDi.eliminarPeliculaRectada()? "Listo se a devuelto la pelicula":"Oh vaya ya no puedes devolver mas peliculas");
+					pocipeli--;
 				}
 			}else {
 				System.out.println("No se an cargado pelicuas");

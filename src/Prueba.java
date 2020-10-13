@@ -33,6 +33,7 @@ class Pelicula{
 	public void setGenero(String genero) {
 		this.genero = genero;
 	}
+	
 	@Override
 	public String toString() {
 		return "Pelicula [titulo=" + titulo + ", genero=" + genero + "]";
@@ -41,52 +42,83 @@ class Pelicula{
 	
 }
 interface RentaPeliculas{
-	public boolean insetarPeliculaRentada(Pelicula peli);
+	boolean insetarPeliculaRentada(Pelicula peli);
 	public boolean eliminarPeliculaRectada();
 	
-	boolean verificarPilaLlena();
-	boolean verficarPilaVacia();
+	public boolean verificarPilaLlena();
+	public boolean verficarPilaVacia();
 	
-	public Pelicula mostrarCima();
+	public void mostrarCima();
 }
 class ImplementacionPilaEstatica implements RentaPeliculas{
-
+	private Pelicula pilaPelis[];
+	private int cima;
+	public ImplementacionPilaEstatica() {
+		pilaPelis=new Pelicula[3];
+		cima=-1;
+	}
 	@Override
 	public boolean insetarPeliculaRentada(Pelicula peli) {
+		if(verificarPilaLlena()) {
+			return false;
+		}else {
+			cima++;
+			pilaPelis[cima]=peli;
+			return true;
+		}
 		
-		return false;
 	}
-
 	@Override
 	public boolean eliminarPeliculaRectada() {
-		
-		return false;
-	}
+		if(verficarPilaVacia()==false) {
+			pilaPelis[cima]=null;
+			cima--;
+			return true;
+		}else {
+			return false;
+		}
 
+	}
 	@Override
 	public boolean verificarPilaLlena() {
+		if(cima==pilaPelis.length-1) {
+			return true;
+		}else {
+			return false;
+		}
 		
-		return false;
 	}
-
 	@Override
 	public boolean verficarPilaVacia() {
-		
-		return false;
+		if(cima==-1) {
+			return true;
+		}else {
+			return false;
+		}
 	}
-
 	@Override
-	public Pelicula mostrarCima() {
-		// TODO Auto-generated method stub
-		return null;
+	public void mostrarCima() {
+		if(verficarPilaVacia()==false) {
+			System.out.println(pilaPelis[cima]);
+		}else {
+			System.out.println("La pil esta vacia");
+		}
+		
 	}
 	
+
 }
 public class Prueba {
 
 	public static void main(String[] args) {
 		Scanner entrada=new Scanner(System.in);
+		byte opcionPelicula=0;
+		System.out.println("En mi programa me plantie que un cliente no puede tener mas de 3 peliculas rentadas al mismo tiempo");
+		int pocipeli=0;
+		Pelicula[] pila=new Pelicula[5];
 		String op;
+		ImplementacionPilaEstatica pilaE=new ImplementacionPilaEstatica();
+		do {
 		System.out.println("Elige la opcion que desees");
 		System.out.println("1-Cargar BD peliculas");
 		System.out.println("2- Rentar Pelicula");
@@ -96,16 +128,52 @@ public class Prueba {
 		op=entrada.nextLine();
 		switch (op) {
 		case "1":
-			
+				pila[0]=new Pelicula("Coraline y la puerta secreta","Fantasia");
+				pila[1]=new Pelicula("El orgen de los guardines","Fantasia");
+				pila[2]=new Pelicula("Promare","Ciencia Ficcion");
+				pila[3]=new Pelicula("El gato con botas","Ciencia ficcion");
+				pila[4]=new Pelicula("Star Wars: Los últimos Jedi","Ciencia ficcion");
+				System.out.println("Se cargo la BD de peliculas");
 			break;
 		case "2":
-			
+			System.out.println("En donde quieres guardar A-> PILA ESTATICA B-> PILA DINAMICA");
+			String op2=entrada.nextLine();
+			if(pila[0]!=null) {
+				if(op2.equalsIgnoreCase("A")) {
+					System.out.println("Que pelicula deseas rentar");
+					for(int i=0;i<pila.length;i++) {
+						System.out.println((i+1)+"-->"+pila[i]);
+					}
+					op2=entrada.nextLine();
+					try {
+						System.out.println(pilaE.insetarPeliculaRentada(pila[Integer.parseInt(op2)])? "Listo se a rantado la pelicula":"Oh vaya ya no puedes rentar mas peliculas");
+						pocipeli++;
+					}catch(NumberFormatException e) {
+						System.out.println("Oh vaya no ingresaste un numero");
+					}
+				}else if(op2.equalsIgnoreCase("B")) {
+					
+				}//B
+			}else {
+				System.out.println("No se an cargado pelicuas");
+			}
 			break;
 		case "3":
-			
+			System.out.println("En donde quieres eliminar A-> PILA ESTATICA B-> PILA DINAMICA");
+			String opOp3=entrada.nextLine();
+			if(pila[0]!=null) {
+				if(opOp3.equalsIgnoreCase("A")) {
+					System.out.println(pilaE.eliminarPeliculaRectada()? "Listo se a devuelto la pelicula":"Oh vaya ya no puedes devolver mas peliculas");
+					pocipeli--;
+				}else if(opOp3.equalsIgnoreCase("B")) {
+					
+				}
+			}else {
+				System.out.println("No se an cargado pelicuas");
+			}
 			break;
 		case "4":
-	
+				System.out.println("La catidad de peliculas disponibles para rentar es de:"+(5-pocipeli));
 	break;
 		case "5":
 	
@@ -114,7 +182,6 @@ public class Prueba {
 			System.out.println("Error la opcion que seleccionaste no existe.");
 			break;
 		}//switch
-		
+		}while(!op.equals("5"));
 	}//Main
-
 }
